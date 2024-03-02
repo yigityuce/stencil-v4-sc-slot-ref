@@ -1,32 +1,28 @@
-import { Component, Prop, h } from '@stencil/core';
-import { format } from '../../utils/utils';
+import { Component, Host, State, h } from '@stencil/core';
 
 @Component({
   tag: 'my-component',
   styleUrl: 'my-component.css',
-  shadow: true,
+  shadow: false,
+  scoped: true
 })
 export class MyComponent {
-  /**
-   * The first name
-   */
-  @Prop() first: string;
-
-  /**
-   * The middle name
-   */
-  @Prop() middle: string;
-
-  /**
-   * The last name
-   */
-  @Prop() last: string;
-
-  private getText(): string {
-    return format(this.first, this.middle, this.last);
-  }
+  @State() headerSlotRef: Element;
 
   render() {
-    return <div>Hello, World! I'm {this.getText()}</div>;
+    return (
+      <Host>
+        <slot
+          name="header"
+          ref={el => {
+            console.log('header slot ref:', el);
+            this.headerSlotRef = el;
+          }}
+        />
+        <slot />
+
+        <span>Header ref status: {this.headerSlotRef ? 'true' : 'false'}</span>
+      </Host>
+    );
   }
 }
